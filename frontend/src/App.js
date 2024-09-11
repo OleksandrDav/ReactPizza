@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Categories from "./components/Categories";
 import Sort from "./components/Sort";
 import PizzaBlock from "./components/PizzaBlock";
+import Skeleton from "./components/PizzaBlock/Skeleton";
 
 import { useFetching } from "./hooks/useFetching";
 import PizzaService from "./API/PizzaService";
@@ -33,9 +34,18 @@ function App() {
           </div>
           <h2 className="content__title">Все пиццы</h2>
           <div className="content__items">
-            {items.map((item) => (
-              <PizzaBlock key={item.id} {...item} />
-            ))}
+            {
+              isPizzasLoading
+                ? Array(12)
+                  .fill(0)
+                  .map((_, index) => <Skeleton key={index} />)
+                : items.map((pizza) => (
+                  <PizzaBlock
+                    key={pizza.id}
+                    {...pizza}
+                  />
+                ))
+            }
           </div>
         </div>
       </div>
