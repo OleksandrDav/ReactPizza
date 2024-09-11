@@ -4,11 +4,24 @@ import Categories from "./components/Categories";
 import Sort from "./components/Sort";
 import PizzaBlock from "./components/PizzaBlock";
 
-import pizzas from "./assets/pizzas.json";
+import { useFetching } from "./hooks/useFetching";
+import PizzaService from "./API/PizzaService";
 
-console.log(pizzas);
+import React, { useEffect, useState } from "react";
 
 function App() {
+  const [items, setItems] = useState([]);
+
+  const [fetchPizzas, isPizzasLoading, pizzasError] = useFetching(async () => {
+    const response = await PizzaService.getPizzas();
+    setItems([...items, ...response.data]);
+  });
+
+  useEffect(() => {
+    fetchPizzas();
+  }, []);
+
+
   return (
     <div className="wrapper">
       <Header />
@@ -20,8 +33,8 @@ function App() {
           </div>
           <h2 className="content__title">Все пиццы</h2>
           <div className="content__items">
-            {pizzas.map((pizza) => (
-              <PizzaBlock key={pizza.id} {...pizza} />
+            {items.map((item) => (
+              <PizzaBlock key={item.id} {...item} />
             ))}
           </div>
         </div>
