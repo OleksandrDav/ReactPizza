@@ -6,25 +6,29 @@ import Skeleton from "../components/PizzaBlock/Skeleton";
 import Sort from "../components/Sort";
 
 import { useFetching } from "../hooks/useFetching";
-import PizzaService from "../API/PizzaService"
+import PizzaService from "../API/PizzaService";
 
 const Home = () => {
   const [items, setItems] = useState([]);
+  const [category, setCategory] = useState(0);
+  const [sortBy, setSortBy] = useState({name: "популярности", sort: "rating"});
 
-  const [fetchPizzas, isPizzasLoading, pizzasError] = useFetching(async () => {
-    const response = await PizzaService.getPizzas();
-    setItems([...items, ...response.data]);
-  });
+  const [fetchPizzas, isPizzasLoading, pizzasError] = useFetching(
+    async (category, sortBy) => {
+      const response = await PizzaService.getPizzas(category, sortBy.sort);
+      setItems(response.data);
+    }
+  );
 
   useEffect(() => {
-    fetchPizzas();
-  }, []);
+    fetchPizzas(category, sortBy);
+  }, [category, sortBy]);
 
   return (
     <div className="container">
       <div className="content__top">
-        <Categories />
-        <Sort />
+        <Categories category={category} setCategory={setCategory} />
+        <Sort sortBy={sortBy} setSortBy={setSortBy} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
