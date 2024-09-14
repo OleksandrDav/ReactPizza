@@ -8,10 +8,12 @@ import Sort from "../components/Sort";
 import { useFetching } from "../hooks/useFetching";
 import PizzaService from "../API/PizzaService";
 import { SearchContext } from "../context/SearchContext";
+import Pagination from "../components/Pagination";
 
 const Home = () => {
   const [items, setItems] = useState([]);
   const [category, setCategory] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState({
     name: "популярности",
     sort: "rating",
@@ -20,15 +22,15 @@ const Home = () => {
   const { searchValue, setSearchValue } = useContext(SearchContext);
 
   const [fetchPizzas, isPizzasLoading, pizzasError] = useFetching(
-    async (category, sortBy, searchValue) => {
-      const response = await PizzaService.getPizzas(category, sortBy.sort, searchValue);
+    async (category, sortBy, searchValue, currentPage) => {
+      const response = await PizzaService.getPizzas(category, sortBy.sort, searchValue, currentPage);
       setItems(response.data);
     }
   );
 
   useEffect(() => {
-    fetchPizzas(category, sortBy, searchValue);
-  }, [category, sortBy, searchValue]);
+    fetchPizzas(category, sortBy, searchValue, currentPage);
+  }, [category, sortBy, searchValue, currentPage]);
 
   return (
     <div className="container">
@@ -48,6 +50,7 @@ const Home = () => {
             //   )
               .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
       </div>
+      <Pagination setCurrentPage={setCurrentPage}/>
     </div>
   );
 };
