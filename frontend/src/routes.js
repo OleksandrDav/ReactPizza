@@ -4,11 +4,16 @@ import App from "./App";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
+import { SearchProvider } from "./context/SearchContext";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <SearchProvider>
+        <App />
+      </SearchProvider>
+    ),
     children: [
       {
         path: "/",
@@ -23,7 +28,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <NotFound />,
-  }
+  },
 ]);
 
 export default router;

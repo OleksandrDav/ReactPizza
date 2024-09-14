@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import Categories from "../components/Categories";
 import PizzaBlock from "../components/PizzaBlock";
@@ -7,22 +7,28 @@ import Sort from "../components/Sort";
 
 import { useFetching } from "../hooks/useFetching";
 import PizzaService from "../API/PizzaService";
+import { SearchContext } from "../context/SearchContext";
 
 const Home = () => {
   const [items, setItems] = useState([]);
   const [category, setCategory] = useState(0);
-  const [sortBy, setSortBy] = useState({name: "популярности", sort: "rating"});
+  const [sortBy, setSortBy] = useState({
+    name: "популярности",
+    sort: "rating",
+  });
+
+  const { searchValue, setSearchValue } = useContext(SearchContext);
 
   const [fetchPizzas, isPizzasLoading, pizzasError] = useFetching(
-    async (category, sortBy) => {
-      const response = await PizzaService.getPizzas(category, sortBy.sort);
+    async (category, sortBy, searchValue) => {
+      const response = await PizzaService.getPizzas(category, sortBy.sort, searchValue);
       setItems(response.data);
     }
   );
 
   useEffect(() => {
-    fetchPizzas(category, sortBy);
-  }, [category, sortBy]);
+    fetchPizzas(category, sortBy, searchValue);
+  }, [category, sortBy, searchValue]);
 
   return (
     <div className="container">
@@ -36,7 +42,11 @@ const Home = () => {
           ? Array(12)
               .fill(0)
               .map((_, index) => <Skeleton key={index} />)
-          : items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
+          : items
+            //   .filter((obj) =>
+            //     obj.title.toLowerCase().includes(searchValue.toLowerCase())
+            //   )
+              .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
       </div>
     </div>
   );
