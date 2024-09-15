@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import { SearchProvider } from "./context/SearchContext";
+import Task from "./pages/Task";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
+  {
+    path: "/tasks",
+    element: <Task />,
+  }
 ]);
 
 export default router;
