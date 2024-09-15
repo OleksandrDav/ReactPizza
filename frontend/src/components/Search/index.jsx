@@ -1,10 +1,24 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import styles from "./Search.module.scss";
+import debounce from "lodash.debounce";
+
 import { SearchContext } from "../../context/SearchContext";
 
 const Search = () => {
-
+  const [value, setValue] = useState("");
   const { searchValue, setSearchValue } = useContext(SearchContext);
+
+  const updateSearchValue = useCallback(
+    debounce((value) => {
+      setSearchValue(value);
+    }, 500),
+    []
+  );
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    updateSearchValue(e.target.value);
+  }
 
   return (
     <div className={styles.root}>
@@ -18,8 +32,8 @@ const Search = () => {
       <input
         className={styles.input}
         placeholder="Поиск пиццы..."
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        value={value}
+        onChange={(e) => handleChange(e)}
       />
     </div>
   );

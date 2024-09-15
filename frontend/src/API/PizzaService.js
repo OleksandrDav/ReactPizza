@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export default class PizzaService {
-  static async getPizzas(categoryId, sortBy, searchValue, currentPage = 1, limit = 4) {
+  static async getPizzas(categoryId, sortBy, searchValue, pageCount = 1, limit = 4) {
     const params = {
-      page: currentPage,
+      page: pageCount,
       limit: limit,
       sortBy: sortBy,
     };
