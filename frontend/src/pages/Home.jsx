@@ -1,20 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Categories from "../components/Categories";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
-import Sort from "../components/Sort";
+import Sort, { sortOptions } from "../components/Sort";
 
+import { useSearchParams } from "react-router-dom";
 import PizzaService from "../API/PizzaService";
 import Pagination from "../components/Pagination";
 import { SearchContext } from "../context/SearchContext";
 import { useFetching } from "../hooks/useFetching";
+import { setFilters } from "../redux/slices/filterSlice";
 
 const Home = () => {
-  const { categoryId, pageCount, sortBy } = useSelector((state) => state.filter);
-  console.log(categoryId, pageCount, sortBy);
-  console.log(useSelector((state) => state.filter));
+  const isSearch = React.useRef(false);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+
+  const { categoryId, pageCount, sortBy } = useSelector(
+    (state) => state.filter
+  );
 
   const [items, setItems] = useState([]);
 
@@ -32,8 +39,44 @@ const Home = () => {
     }
   );
 
+  // Если изменили параметры поиска, то обновляем URL
   useEffect(() => {
-    fetchPizzas(categoryId, sortBy, searchValue, pageCount);
+    if (!initialLoad) {
+      setSearchParams({
+        sortBy: sortBy.sort,
+        categoryId,
+        pageCount,
+      });
+    }
+    setInitialLoad(false);
+  }, [categoryId, sortBy.sort, pageCount]);
+
+  // для того, чтобы при при первом рендере проверять URL
+  useEffect(() => {
+    if (window.location.search) {
+      const categoryId = searchParams.get("categoryId");
+      const sortBy = searchParams.get("sortBy");
+      const pageCount = searchParams.get("pageCount");
+
+      const sort = sortOptions.find((obj) => obj.sort === sortBy);
+
+      dispatch(
+        setFilters({
+          categoryId: categoryId,
+          pageCount: pageCount,
+          sortBy: sort,
+        })
+      );
+      isSearch.current = true;
+    }
+  }, []);
+
+  // Если был первый рендер, то запрашиваем пиццы
+  useEffect(() => {
+    if (!isSearch.current) {
+      fetchPizzas(categoryId, sortBy, searchValue, pageCount);
+    }
+    isSearch.current = false;
   }, [categoryId, sortBy, searchValue, pageCount]);
 
   return (
