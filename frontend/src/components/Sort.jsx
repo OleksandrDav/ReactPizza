@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSortBy } from "../redux/slices/filterSlice";
 
@@ -11,6 +11,7 @@ export const sortOptions = [
 const Sort = () => {
   const sortBy = useSelector((state) => state.filter.sortBy);
   const dispatch = useDispatch();
+  const sortRef = React.useRef();
 
   const [visiblePopup, setVisiblePopup] = useState(false);
 
@@ -19,8 +20,20 @@ const Sort = () => {
     setVisiblePopup(false);
   };
 
+  const handleClickOutside = (e) => {
+    if (sortRef.current && !sortRef.current.contains(e.target)) {
+      setVisiblePopup(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div
         className="sort__label"
         onClick={() => setVisiblePopup(!visiblePopup)}
