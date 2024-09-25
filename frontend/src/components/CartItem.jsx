@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { plusItem, minusItem, removeItem } from "../redux/slices/cartSlice";
+import { plusItem, minusItem, removeItem, selectCartItems } from "../redux/slices/cartSlice";
 
 const CartItem = () => {
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
   const sizeNames = ["26cm", "30cm", "40cm"];
 

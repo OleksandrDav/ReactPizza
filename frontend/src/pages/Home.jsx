@@ -1,31 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 import Categories from "../components/Categories";
+import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
 import Pagination from "../components/Pagination";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Sort, { sortOptions } from "../components/Sort";
-import { SearchContext } from "../context/SearchContext";
-import { setFilters } from "../redux/slices/filterSlice";
-import { fetchPizzas } from "../redux/slices/pizzaSlice";
-import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
+import { selectFilters, setFilters } from "../redux/slices/filterSlice";
+import { fetchPizzas, selectPizza } from "../redux/slices/pizzaSlice";
 
 const Home = () => {
   const isSearch = React.useRef(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { items, status, error } = useSelector((state) => state.pizza);
+  const { items, status, error } = useSelector(selectPizza);
 
   const dispatch = useDispatch();
 
-  const { categoryId, pageCount, sortBy } = useSelector(
-    (state) => state.filter
-  );
-
-  const { searchValue } = useContext(SearchContext);
+  const { categoryId, pageCount, sortBy, searchValue } = useSelector(selectFilters);
 
   // Update URL when filters change
   // Если изменили параметры поиска, то обновляем URL
@@ -86,7 +81,7 @@ const Home = () => {
       <h2 className="content__title">Все пиццы</h2>
 
       {error && <ErrorMessage message={error} />}
-      
+
       <div className="content__items">
         {status === "loading"
           ? Array(12)

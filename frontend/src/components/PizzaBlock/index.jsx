@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { plusItem } from "../../redux/slices/cartSlice";
+import { plusItem, selectCartItems } from "../../redux/slices/cartSlice";
 
 const PizzaBlock = ({
   id,
@@ -15,14 +15,17 @@ const PizzaBlock = ({
 }) => {
   const typeNames = ["тонкое", "традиционное"];
 
-  const cartItems = useSelector((state) =>
-    state.cart.items.filter((obj) => obj.id === id)
-  );
+  const cartItems = useSelector(selectCartItems);
+  const filteredCartItems = cartItems.filter((obj) => obj.id === id);
+
   const [activeType, setActiveType] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
   const dispatch = useDispatch();
 
-  const addedCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const addedCount = filteredCartItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
   const onClickAdd = () => {
     const item = {
@@ -49,7 +52,7 @@ const PizzaBlock = ({
                 onClick={() => setActiveType(index)}
                 className={activeType === index ? "active" : ""}
               >
-                {type === 0 ? "тонкое" : "традиционное"}
+                {typeNames[type]}
               </li>
             ))}
           </ul>
