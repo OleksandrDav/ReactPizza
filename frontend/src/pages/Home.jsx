@@ -1,44 +1,33 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
 import Categories from "../components/Categories";
+import Pagination from "../components/Pagination";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Sort, { sortOptions } from "../components/Sort";
-
-import { useSearchParams } from "react-router-dom";
-import PizzaService from "../API/PizzaService";
-import Pagination from "../components/Pagination";
 import { SearchContext } from "../context/SearchContext";
-import { useFetching } from "../hooks/useFetching";
 import { setFilters } from "../redux/slices/filterSlice";
+import { fetchPizzas } from "../redux/slices/pizzaSlice";
+import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
 
 const Home = () => {
   const isSearch = React.useRef(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { items, status, error } = useSelector((state) => state.pizza);
+
   const dispatch = useDispatch();
 
   const { categoryId, pageCount, sortBy } = useSelector(
     (state) => state.filter
   );
 
-  const [items, setItems] = useState([]);
+  const { searchValue } = useContext(SearchContext);
 
-  const { searchValue, setSearchValue } = useContext(SearchContext);
-
-  const [fetchPizzas, isPizzasLoading, pizzasError] = useFetching(
-    async (categoryId, sortBy, searchValue, pageCount) => {
-      const response = await PizzaService.getPizzas(
-        categoryId,
-        sortBy.sort,
-        searchValue,
-        pageCount
-      );
-      setItems(response.data);
-    }
-  );
-
+  // Update URL when filters change
   // Если изменили параметры поиска, то обновляем URL
   useEffect(() => {
     if (!initialLoad) {
@@ -51,7 +40,8 @@ const Home = () => {
     setInitialLoad(false);
   }, [categoryId, sortBy.sort, pageCount]);
 
-  // для того, чтобы при при первом рендере проверять URL
+  // On first render, load filters from URL and set state
+  // Для того, чтобы при при первом рендере проверять URL и устанавливать фильтры
   useEffect(() => {
     if (window.location.search) {
       const categoryId = searchParams.get("categoryId");
@@ -71,13 +61,21 @@ const Home = () => {
     }
   }, []);
 
+  // Fetch pizzas on first render or when filters change
   // Если был первый рендер, то запрашиваем пиццы
   useEffect(() => {
     if (!isSearch.current) {
-      fetchPizzas(categoryId, sortBy, searchValue, pageCount);
+      dispatch(
+        fetchPizzas({
+          categoryId,
+          sortBy,
+          searchValue,
+          pageCount,
+        })
+      );
     }
     isSearch.current = false;
-  }, [categoryId, sortBy, searchValue, pageCount]);
+  }, [categoryId, sortBy, searchValue, pageCount, dispatch]);
 
   return (
     <div className="container">
@@ -86,21 +84,17 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
+
+      {error && <ErrorMessage message={error} />}
+      
       <div className="content__items">
-        {isPizzasLoading ? (
-          Array(12)
-            .fill(0)
-            .map((_, index) => <Skeleton key={index} />)
-        ) : pizzasError ? ( // Check for pizzasError
-          <p>{pizzasError}</p> // Display the error message
-        ) : (
-          items
-            //   .filter((obj) =>
-            //     obj.title.toLowerCase().includes(searchValue.toLowerCase())
-            //   )
-            .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)
-        )}
+        {status === "loading"
+          ? Array(12)
+              .fill(0)
+              .map((_, index) => <Skeleton key={index} />)
+          : items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
       </div>
+
       <Pagination />
     </div>
   );
