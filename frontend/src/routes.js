@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import Task from "./pages/Task";
+import FullPizza from "./pages/FullPizza";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
         path: "cart",
         element: <Cart />,
       },
+      {
+        path: 'pizza/:id',
+        element: <FullPizza />,
+      }
     ],
   },
   {
