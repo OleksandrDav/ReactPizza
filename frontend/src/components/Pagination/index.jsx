@@ -14,7 +14,6 @@ const Pagination = () => {
         breakLabel="..."
         nextLabel=">"
         onPageChange={(e) => {
-          console.log(e); // Add this line to check the event
           dispatch(setPageCount(e.selected + 1));
         }}
         pageRangeDisplayed={4}

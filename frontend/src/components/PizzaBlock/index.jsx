@@ -14,7 +14,7 @@ const PizzaBlock = ({
   category,
   rating,
 }) => {
-  const typeNames = ["тонкое", "традиционное"];
+  const typeNames = ["subtle", "traditional"];
 
   const cartItems = useSelector(selectCartItems);
   const filteredCartItems = cartItems.filter((obj) => obj.id === id);
@@ -72,7 +72,7 @@ const PizzaBlock = ({
           </ul>
         </div>
         <div className="pizza-block__bottom">
-          <div className="pizza-block__price">от {price}$</div>
+          <div className="pizza-block__price">from {price}$</div>
           <div
             onClick={onClickAdd}
             className="button button--outline button--add"
@@ -89,7 +89,7 @@ const PizzaBlock = ({
                 fill="white"
               />
             </svg>
-            <span>Добавить</span>
+            <span>Add</span>
             {addedCount > 0 && <i>{addedCount}</i>}
           </div>
         </div>

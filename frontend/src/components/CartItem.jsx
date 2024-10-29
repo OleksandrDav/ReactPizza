@@ -62,7 +62,7 @@ const CartItem = () => {
             </div>
           </div>
           <div class="cart__item-price">
-            <b>{item.price} ₽</b>
+            <b>{item.price} $</b>
           </div>
           <div onClick={() => dispatch(removeItem(item))} class="cart__item-remove">
             <div class="button button--outline button--circle">

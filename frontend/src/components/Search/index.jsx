@@ -31,7 +31,7 @@ const Search = () => {
       </svg>
       <input
         className={styles.input}
-        placeholder="Поиск пиццы..."
+        placeholder="Searching for pizza..."
         value={value}
         onChange={(e) => handleChange(e)}
       />

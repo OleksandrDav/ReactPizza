@@ -7,7 +7,7 @@ const NotFoundBlock = () => {
   return (
     <div className={styles.containerStyle}>
       <div>NotFound</div>
-      <Link to="/" className={styles.linkStyle}>На главную</Link>
+      <Link to="/" className={styles.linkStyle}>To the main page</Link>
     </div>
   );
 };

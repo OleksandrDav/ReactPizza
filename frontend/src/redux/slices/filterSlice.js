@@ -5,7 +5,7 @@ const initialState = {
   categoryId: 0,
   pageCount: 1,
   sortBy: {
-    name: "популярности",
+    name: "popularity",
     sort: "rating",
   },
 };

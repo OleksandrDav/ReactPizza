@@ -28,9 +28,7 @@ const FullPizza = () => {
   }
 
   if (status === "failed") {
-    return (
-      <ErrorMessage message={error} />
-    );
+    return <ErrorMessage message={error} />;
   }
 
   return (
@@ -38,14 +36,14 @@ const FullPizza = () => {
       <img src={pizza.imageUrl} alt="Pizza" />
       <h2>{pizza.title}</h2>
       <p>
-        Состав:
+        Compound:
         <br />
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum quo
         sunt tempore, sequi libero, odit quos nam vero omnis voluptatum
         dignissimos quas asperiores voluptatibus nulla aliquam saepe deleniti
         eaque. Quas?
       </p>
-      <h4>Цена: {pizza.price}</h4>
+      <h4>Price: {pizza.price}</h4>
     </div>
   );
 };

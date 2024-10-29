@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectSortBy, setSortBy } from "../redux/slices/filterSlice";
 
 export const sortOptions = [
-  { name: "популярности", sort: "rating" },
-  { name: "цене", sort: "price" },
-  { name: "алфавиту", sort: "title" },
-];
+  { name: "popularity", sort: "rating" },
+  { name: "price", sort: "price" },
+  { name: "alphabet", sort: "title" },
+  ];
 
 const Sort = () => {
   const sortBy = useSelector(selectSortBy);
@@ -50,7 +50,7 @@ const Sort = () => {
             fill="#2C2C2C"
           />
         </svg>
-        <b>Сортировка по:</b>
+        <b>Sort by:</b>
         <span>{sortBy.name}</span>
       </div>
       <div className="sort__popup" hidden={!visiblePopup}>
